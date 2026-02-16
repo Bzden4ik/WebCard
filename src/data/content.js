@@ -55,7 +55,7 @@ export const projects = {
     },
     {
       title: "LinkTime",
-      description: "Социальная платформа для общения и обмена контентом в реальном времени.",
+      description: "Веб-приложение для учёта рабочего времени с таймером, задачами и календарём.",
       tags: ["React", "Node.js", "WebSocket"],
       link: "https://github.com/Bzden4ik/LinkTime",
     },
