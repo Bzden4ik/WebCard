@@ -68,7 +68,7 @@ export const contact = {
   description: "Открыт к предложениям и интересным проектам. Напишите мне!",
   links: [
     { name: "GitHub", url: "https://github.com/Bzden4ik", icon: "github" },
-    { name: "Telegram", url: "https://t.me/", icon: "telegram" },
+    { name: "Telegram", url: "https://t.me/Bzden4ikkk", icon: "telegram" },
     { name: "Email", url: "mailto:deniskazah33@gmail.com", icon: "email" },
   ],
 };
