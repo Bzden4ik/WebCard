@@ -12,8 +12,8 @@ export const about = {
   description:
     "Я Full-Stack разработчик с опытом создания веб-приложений полного цикла. Работаю как с фронтендом — React, современный JavaScript, адаптивные интерфейсы — так и с бэкендом: Node.js, базы данных, API. Люблю чистый код, продуманную архитектуру и интерфейсы, которыми приятно пользоваться.",
   stats: [
-    { value: 20, suffix: "+", label: "Проектов" },
-    { value: 3, suffix: "+", label: "Года опыта" },
+    { value: 10, suffix: "+", label: "Проектов" },
+    { value: 1, suffix: "+", label: "Год опыта" },
     { value: 99, suffix: "%", label: "Чистый код" },
   ],
 };
@@ -54,10 +54,10 @@ export const projects = {
       link: "https://github.com/Bzden4ik/WebCard",
     },
     {
-      title: "E-Commerce Platform",
-      description: "Полноценная платформа интернет-магазина с корзиной, оплатой и панелью администратора.",
-      tags: ["React", "Express", "PostgreSQL"],
-      link: "#",
+      title: "LinkTime",
+      description: "Социальная платформа для общения и обмена контентом в реальном времени.",
+      tags: ["React", "Node.js", "WebSocket"],
+      link: "https://github.com/Bzden4ik/LinkTime",
     },
   ],
 };
@@ -69,7 +69,7 @@ export const contact = {
   links: [
     { name: "GitHub", url: "https://github.com/Bzden4ik", icon: "github" },
     { name: "Telegram", url: "https://t.me/Bzden4ikkk", icon: "telegram" },
-    { name: "Email", url: "mailto:deniskazah33@gmail.com", icon: "email" },
+    { name: "Email", url: "mailto:bzdenbzden4ik@gmail.com", icon: "email" },
   ],
 };
 
