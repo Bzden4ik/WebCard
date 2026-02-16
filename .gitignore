@@ -1,1 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Media
 *.mp4
+
+# Docs (originals)
+Animation.md
+UI.md
+UI.md
