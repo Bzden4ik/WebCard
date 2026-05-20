@@ -13,8 +13,7 @@ export default defineConfig({
         manualChunks: {
           // Heavy 3D libs go into their own chunk so the initial bundle
           // doesn't carry them — they hydrate after the hero markup paints.
-          three: ['three', '@react-three/fiber', '@react-three/drei'],
-          motion: ['framer-motion', 'gsap'],
+          three: ['three', '@react-three/fiber'],
         },
       },
     },
