@@ -1,28 +1,30 @@
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import About from './components/About'
-import Skills from './components/Skills'
-import Projects from './components/Projects'
-import Contact from './components/Contact'
+import { useEffect } from 'react';
+import CanvasBg from './components/CanvasBg';
+import Nav from './components/Nav';
+import Manifest from './components/Manifest';
+import Operator from './components/Operator';
+import Craft from './components/Craft';
+import Work from './components/Work';
+import Signal from './components/Signal';
 
 export default function App() {
+  // is-ready на <body> запускает CSS-driven reveal-line анимации
+  useEffect(() => {
+    const t = setTimeout(() => document.documentElement.classList.add('is-ready'), 80);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <>
-      {/* Background layers */}
-      <div className="mesh-bg" />
-      <div className="light-rays" />
-
-      {/* Navigation */}
-      <Navbar />
-
-      {/* Sections */}
-      <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Contact />
+      <CanvasBg />
+      <Nav />
+      <main id="content">
+        <Manifest />
+        <Operator />
+        <Craft />
+        <Work />
+        <Signal />
       </main>
     </>
-  )
+  );
 }
