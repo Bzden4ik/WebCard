@@ -527,7 +527,7 @@ function AppMock() {
                 ))}
               </div>
               <a
-                href="https://github.com/warfa/YouDownload/releases"
+                href="https://github.com/Bzden4ik/YouDownload/releases"
                 target="_blank" rel="noopener noreferrer"
                 className="yd-stub-cta"
                 onClick={(e) => { userInteracted.current = true; }}

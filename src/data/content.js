@@ -188,7 +188,7 @@ export const work = {
       year: "2025",
       role: "Solo · Desktop",
       live: null,
-      repo: "https://github.com/warfa/YouDownload",
+      repo: "https://github.com/Bzden4ik/YouDownload",
       kind: "Desktop · v1.1.5",
       brief: [
         "Electron-приложение поверх yt-dlp. Поддерживает 1000+ сайтов, авто-слияние видео+аудио через ffmpeg, очередь загрузок, историю до 200 записей, RU/EN. Бинарь распространяется через GitHub Releases.",
