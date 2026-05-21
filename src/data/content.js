@@ -332,7 +332,7 @@ export const signal = {
 
   channels: [
     { code: "CH-01", label: "GITHUB",   handle: "github.com/Bzden4ik",   href: "https://github.com/Bzden4ik" },
-    { code: "CH-02", label: "TELEGRAM", handle: "@Bzden4ikkk",           href: "https://t.me/Bzden4ikkk" },
+    { code: "CH-02", label: "TELEGRAM", handle: "@Bzden4ikkk",           href: "https://t.me/@QWEE4IK" },
     { code: "CH-03", label: "EMAIL",    handle: "bzdenbzden4ik@gmail.com", href: "mailto:bzdenbzden4ik@gmail.com" },
   ],
 
