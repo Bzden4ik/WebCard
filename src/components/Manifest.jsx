@@ -13,22 +13,36 @@ const WebGLStage = lazy(() => import('./WebGLStage'));
      [meta col-3]  [headline+abstract+CTA col-6]  [WebGL stage col-3]
    ═══════════════════════════════════════════════════════════════════ */
 
-/** Word-level mask reveal — each word slides up from below its own clip. */
-function RevealHeadline({ lines, baseDelay = 200, perLineDelay = 110 }) {
+/** Two-tier headline with mask reveal.
+ *  Primary lines render large; secondary render smaller, italic-amber.
+ *  Each line is its own mask, words slide up staggered.
+ */
+function RevealHeadline({ primary, secondary }) {
+  let delayCounter = 0;
+  const renderLine = (word, baseClass) => {
+    const delay = 200 + delayCounter * 95;
+    delayCounter++;
+    return (
+      <span
+        key={`${baseClass}-${delayCounter}`}
+        className={`mh-word ${baseClass}`}
+        style={{ '--reveal-delay': `${delay}ms` }}
+      >
+        <span className="mh-mask">
+          <span className="mh-text">{word}</span>
+        </span>{' '}
+      </span>
+    );
+  };
+
   return (
-    <h1 className="manifest-headline t-display">
-      {lines.map((word, i) => (
-        <span
-          key={i}
-          className={`mh-word mh-word-${i}`}
-          style={{ '--reveal-delay': `${baseDelay + i * perLineDelay}ms` }}
-        >
-          <span className="mh-mask">
-            <span className="mh-text">{word}</span>
-          </span>
-          {i < lines.length - 1 ? ' ' : ''}
-        </span>
-      ))}
+    <h1 className="manifest-headline">
+      <span className="mh-primary t-display">
+        {primary.map((w) => renderLine(w, 'mh-tier-primary'))}
+      </span>
+      <span className="mh-secondary t-display-italic">
+        {secondary.map((w) => renderLine(w, 'mh-tier-secondary'))}
+      </span>
     </h1>
   );
 }
@@ -89,7 +103,10 @@ export default function Manifest() {
 
           {/* ─── headline column ─── */}
           <div className="manifest-head col-6">
-            <RevealHeadline lines={manifest.headline} />
+            <RevealHeadline
+              primary={manifest.headlinePrimary}
+              secondary={manifest.headlineSecondary}
+            />
 
             <div className="manifest-after">
               <p
@@ -222,26 +239,41 @@ export default function Manifest() {
           50%      { opacity: 0.72; }
         }
 
-        /* ────────── headline ────────── */
+        /* ────────── headline — two tiers, restrained scale ────────── */
         .manifest-headline {
-          font-size: clamp(3rem, 7.4vw, 8.2rem);
-          line-height: 0.92;
-          letter-spacing: -0.04em;
-          font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 360;
-          color: var(--paper-0);
+          display: flex;
+          flex-direction: column;
+          gap: 1.4rem;
           margin-bottom: 2.4rem;
-          /* Allow words to break wherever they fit */
           word-break: keep-all;
         }
-        .mh-word {
-          display: inline;
+        .mh-primary, .mh-secondary { display: block; }
+
+        /* Primary line — large but not overwhelming. Was: clamp(3rem, 7.4vw, 8.2rem) */
+        .mh-primary {
+          font-size: clamp(2.2rem, 5.4vw, 5.4rem);
+          line-height: 0.96;
+          letter-spacing: -0.035em;
+          font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 380;
+          color: var(--paper-0);
         }
+        /* Secondary line — smaller, italic amber */
+        .mh-secondary {
+          font-size: clamp(1.2rem, 2.7vw, 2.6rem);
+          line-height: 1.05;
+          letter-spacing: -0.02em;
+          font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 320;
+          color: var(--amber);
+          font-style: italic;
+        }
+
+        .mh-word { display: inline; }
         .mh-mask {
           display: inline-block;
           overflow: hidden;
           vertical-align: bottom;
           line-height: inherit;
-          padding-bottom: 0.06em; /* descenders */
+          padding-bottom: 0.08em;
         }
         .mh-text {
           display: inline-block;
@@ -255,15 +287,6 @@ export default function Manifest() {
         @keyframes mh-up {
           0%   { transform: translateY(102%); }
           100% { transform: translateY(0); }
-        }
-        /* word-level accents — second word italic amber, fourth muted */
-        .mh-word-1 .mh-text {
-          font-style: italic;
-          font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 320;
-          color: var(--amber);
-        }
-        .mh-word-3 .mh-text {
-          color: var(--paper-2);
         }
 
         /* ────────── abstract + CTA ────────── */

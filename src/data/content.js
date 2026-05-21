@@ -33,15 +33,10 @@ export const nav = {
 export const manifest = {
   chapter: "§ 00",
   chapterLabel: "Manifest",
-  // Большой headline, ломается на строки для mask-reveal
-  headline: [
-    "Строю",
-    "веб-системы,",
-    "которые",
-    "не ломаются",
-    "в среду.",
-  ],
-  // Краткое определение под заголовком — техническое, не маркетинговое
+  // Headline в двух уровнях: главная фраза + подпись (раздельно для разной типографики)
+  headlinePrimary:   ["Производственные", "веб-системы."],
+  headlineSecondary: ["От интерфейса", "до инфраструктуры."],
+  // Краткое определение под заголовком (без тире, без жаргона)
   abstract: "Full-stack engineer. Пишу production-ready интерфейсы, бэкенд и инфраструктуру для проектов, которым нужно работать каждый день, а не выглядеть на демке.",
   // Метаданные для боковой колонки (mono)
   sideMeta: [
@@ -62,14 +57,14 @@ export const operator = {
   chapterLabel: "Operator",
   rightTag: "DOSSIER / IDENTITY",
 
-  // Большая цитата вверху секции (Fraunces, разреженная)
-  pull: "Хороший софт — это тот, который запускают в продакшен, и о нём забывают, потому что он просто работает.",
+  // Большая цитата вверху секции (Fraunces, разреженная). Без тире в тексте.
+  pull: "Лучшая архитектура та, которую можно объяснить за пять минут, и которая выдержит пять лет.",
 
-  // Двухколоночный body в стиле журнальной верстки
+  // Двухколоночный body в стиле журнальной верстки. Без тире в тексте.
   body: [
-    "Денис, full-stack инженер. Работаю на стеке React / Node.js / PostgreSQL — от первого экрана интерфейса до миграций базы и деплоя.",
-    "Считаю, что код должен быть короче, чем кажется, а интерфейсы — медленнее, чем хочется. Лучшая фича — та, которую не пришлось писать.",
-    "Беру задачи, где нужно собрать систему с нуля или довести существующую до production-grade. Без \"быстро накидать прототип\" — только то, что выдержит реальный трафик.",
+    "Денис, full-stack инженер. Работаю на стеке React, Node.js, PostgreSQL. Веду проект от первого экрана интерфейса до миграций базы, конфигов nginx и продакшен-деплоя.",
+    "Подход инженерный, не «давайте быстро накидаем прототип». Каждое решение оценивается по тому, как оно будет жить через год: читаемость кода, простота отката, стоимость поддержки.",
+    "Беру проекты на полный цикл, а также отдельные участки: рефакторинг production-системы, проектирование схемы базы, настройка инфраструктуры, code review. Работаю с теми, кому важен долгий срок жизни продукта.",
   ],
 
   // Реальные, честные stats
@@ -184,8 +179,7 @@ export const work = {
         { row: "AUTH",   values: ["bcrypt", "JWT HttpOnly", "audit_log", "2-level rate-limit"] },
         { row: "INFRA",  values: ["nginx + TLS", "systemd", "Cloudflare proxy", "atomic release.sh"] },
       ],
-      // ASCII-mock'ап правой части (placeholder preview)
-      preview: "fighting",
+      preview: "live-embed",
     },
     {
       code: "PRJ-002",
@@ -206,28 +200,28 @@ export const work = {
         { row: "UI",      values: ["React 18", "electron-store persistence", "2 themes / RU+EN"] },
         { row: "BUILD",   values: ["electron-builder", "GitHub Releases", "auto-update target"] },
       ],
-      preview: "terminal",
+      preview: "app-mock",
     },
     {
       code: "PRJ-003",
-      title: "MortalStrike",
-      tagline: "BepInEx-мод для SPT: динамическая артиллерия в рейдах",
-      year: "2025",
-      role: "Solo · Gamedev mod",
+      title: "GotIt",
+      tagline: "Парсер wishlist-стримеров с fetta.app, Telegram-бот, real-time уведомления",
+      year: "2024",
+      role: "Solo · Full-stack distributed",
       live: null,
-      repo: "https://github.com/Bzden4ik/SPTMod.MortalStrike",
-      kind: "C# Mod · BepInEx",
+      repo: "https://github.com/Bzden4ik/GotIt",
+      kind: "Web + Bot + Scheduler",
       brief: [
-        "Полноценный gameplay-мод на C# для Single Player Tarkov. Случайные артиллерийские удары в рейдах, эскалация в Event 2 (полная зачистка карты волнами к концу рейда), смарт-таргетинг по живым игрокам и hand-placed landmark'ам для всех 11 карт.",
-        "Поддержка multiplayer-мода Fika через кастомные packet-protocol: headless-сервер оркестрирует события, клиенты получают звук и damage синхронно. Cover detection отсекает игроков под крышей.",
+        "Шесть подсистем общаются между собой: React-фронт на GitHub Pages, REST API на VPS, SQLite-БД с миграциями, парсер fetta.app (HTML scraping с retry/backoff), cron-scheduler по cron-выражению, Telegram-бот с login widget и push-нотификациями.",
+        "Парсер обходит rate-limit fetta.app через jittered intervals, scheduler не дублирует уведомления через dedup-кеш в SQLite, бот аутентифицирует через Telegram Login Widget без хранения паролей. Каждая часть может упасть и подняться независимо.",
       ],
       specs: [
-        { row: "LANG",     values: ["C# / .NET", "BepInEx 5"] },
-        { row: "FEATURES", values: ["audio rotation", "cover-aware damage", "11 maps landmark'd"] },
-        { row: "NETWORK",  values: ["Fika custom packets", "headless-server orchestration"] },
-        { row: "CONFIG",   values: ["per-section .cfg", "force-trigger debug"] },
+        { row: "FRONT",     values: ["React", "GitHub Pages", "Telegram Login Widget"] },
+        { row: "API",       values: ["Node.js", "Express", "SQLite (better-sqlite3)"] },
+        { row: "PIPELINE",  values: ["cron-scheduler", "HTML parser (cheerio)", "dedup cache"] },
+        { row: "BOT",       values: ["Telegram Bot API", "push notifications", "deep links"] },
       ],
-      preview: "map",
+      preview: "architecture",
     },
   ],
 
@@ -253,12 +247,12 @@ export const work = {
     },
     {
       code: "PRJ-006",
-      title: "GotIt",
-      kind: "Web + Telegram bot",
-      year: "2024",
-      summary: "Отслеживание wishlist'ов стримеров с fetta.app + парсер + cron + push в Telegram.",
-      stack: ["React", "Node.js", "SQLite", "Telegram Bot API"],
-      repo: "https://github.com/Bzden4ik/GotIt",
+      title: "MortalStrike",
+      kind: "C# BepInEx mod · SPT",
+      year: "2025",
+      summary: "Динамическая артиллерия в рейдах SPT, эскалация Event 2, Fika multiplayer sync.",
+      stack: ["C# / .NET", "BepInEx 5", "Fika packets", "audio mixing"],
+      repo: "https://github.com/Bzden4ik/SPTMod.MortalStrike",
     },
     {
       code: "PRJ-007",
