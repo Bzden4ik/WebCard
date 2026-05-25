@@ -109,6 +109,353 @@ function LiveEmbed({ url, label }) {
   );
 }
 
+/**
+ * UploaderMock — pixel-perfect replica of YouDesktopUploader-3.
+ * Pure visual showcase (no interaction). Auto-cycles through 3 screens:
+ *   1) Gateway (Connect)
+ *   2) Directories (FolderMapping)
+ *   3) Changes (Diff viewer)
+ * Genre: psychedelic cyber-brutalist · neon green/magenta/orange · scanlines.
+ * Source: F:\ProjectHub\archive\YouDekstopUploader-3 (src/styles/globals.css)
+ */
+function UploaderMock() {
+  const [screen, setScreen] = useState(0); // 0=connect, 1=mapping, 2=changes
+
+  // auto-cycle every 9s — slower, calmer browsing
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = setInterval(() => setScreen((s) => (s + 1) % 3), 9000);
+    return () => clearInterval(id);
+  }, []);
+
+  const isConnected = screen >= 1;
+
+  return (
+    <div className="fp fp-uploader">
+      {/* scanline overlay */}
+      <div className="upl-scanlines" aria-hidden />
+
+      {/* ─── title bar ─── */}
+      <div className="upl-titlebar">
+        <div className="upl-tb-left">
+          <span className="upl-hex">⬡</span>
+          <span className="upl-appname">YOUDESKTOPUPLOADER</span>
+          <span className={`upl-conn ${isConnected ? 'is-on' : ''}`}>
+            <span className="upl-conn-dot" />
+            <span>operator@demo-host</span>
+            <span className="upl-conn-proto">[SFTP]</span>
+          </span>
+        </div>
+        <div className="upl-tb-drag" />
+        <div className="upl-tb-right">
+          {isConnected && (
+            <button className="upl-btn-disconnect">DISCONNECT</button>
+          )}
+          <button className="upl-wc">─</button>
+          <button className="upl-wc">□</button>
+          <button className="upl-wc upl-wc-close">✕</button>
+        </div>
+      </div>
+
+      {/* ─── nav tabs (smooth slide-down when connected) ─── */}
+      <div className={`upl-navbar ${isConnected ? 'is-on' : ''}`}>
+        <button className={`upl-nav-tab ${screen === 1 ? 'upl-nav-tab-on' : ''}`}>DIRECTORIES</button>
+        <button className={`upl-nav-tab ${screen === 2 ? 'upl-nav-tab-on' : ''}`}>
+          CHANGES <span className="upl-change-badge">4</span>
+        </button>
+      </div>
+
+      {/* ─── content — all 3 slots stay mounted, crossfade via opacity ─── */}
+      <div className="upl-content">
+        <div className={`upl-screen-slot ${screen === 0 ? 'is-on' : ''}`} aria-hidden={screen !== 0}>
+          <UploaderConnectScreen />
+        </div>
+        <div className={`upl-screen-slot ${screen === 1 ? 'is-on' : ''}`} aria-hidden={screen !== 1}>
+          <UploaderMappingScreen />
+        </div>
+        <div className={`upl-screen-slot ${screen === 2 ? 'is-on' : ''}`} aria-hidden={screen !== 2}>
+          <UploaderChangesScreen />
+        </div>
+      </div>
+
+      {/* ─── bottom bar ─── */}
+      <div className="upl-bottombar">
+        <button className="upl-console-toggle">▲ CONSOLE</button>
+        <span className="upl-version">v1.0.0 // BICYCLE BUILD</span>
+      </div>
+
+      <div className="fp-corner t-meta upl-corner">PREVIEW · CYBER-BRUTALIST · SFTP/FTP SYNC</div>
+    </div>
+  );
+}
+
+/* ── SCREEN 1: CONNECT (The Gateway) — centered, MOUNT button ── */
+function UploaderConnectScreen() {
+  return (
+    <div className="upl-screen upl-screen-connect">
+      <div className="upl-conn-center">
+        <div className="upl-hex-strip" aria-hidden>
+          {Array.from({ length: 8 }).map((_, i) => {
+            const op = i === 1 ? 0.95 : i === 2 ? 0.7 : i === 3 ? 0.55 : 0.18;
+            return <span key={i} className="upl-hex-dot" style={{ opacity: op }}>⬡</span>;
+          })}
+        </div>
+        <h1 className="upl-title-h1">THE GATEWAY</h1>
+        <p className="upl-title-sub">// Establish uplink to remote host</p>
+
+        <div className="upl-conn-card">
+          <div className="upl-section-label">SAVED PROFILES</div>
+          <div className="upl-profile-stack">
+            {[
+              { name: 'PRODUCTION',  host: '203.0.113.42:22',  proto: 'SFTP', active: true  },
+              { name: 'STAGING',     host: '198.51.100.18:22', proto: 'SFTP', active: false },
+            ].map((p) => (
+              <div key={p.name} className={`upl-profile-card ${p.active ? 'is-active' : ''}`}>
+                <div>
+                  <div className="upl-profile-name">{p.name}</div>
+                  <div className="upl-profile-meta">{p.host} [{p.proto}]</div>
+                </div>
+                <button className="upl-delete-btn">✕</button>
+              </div>
+            ))}
+          </div>
+
+          <div className="upl-section-label upl-section-label-spaced">PROTOCOL</div>
+          <div className="upl-protocol-toggle">
+            <button className="upl-proto-opt upl-proto-opt-on">SFTP</button>
+            <button className="upl-proto-opt">FTP</button>
+          </div>
+
+          <div className="upl-form-row upl-form-row-spaced">
+            <div className="upl-field upl-field-grow">
+              <label className="upl-field-label">HOST / IP</label>
+              <input className="upl-field-input upl-field-ghost" defaultValue="192.168.1.100" readOnly />
+            </div>
+            <div className="upl-field upl-field-port">
+              <label className="upl-field-label">PORT</label>
+              <input className="upl-field-input" defaultValue="22" readOnly />
+            </div>
+          </div>
+
+          <div className="upl-form-row">
+            <div className="upl-field upl-field-grow">
+              <label className="upl-field-label">USERNAME</label>
+              <input className="upl-field-input upl-field-ghost" defaultValue="root" readOnly />
+            </div>
+            <div className="upl-field upl-field-grow">
+              <label className="upl-field-label">PASSWORD</label>
+              <input className="upl-field-input upl-field-ghost" type="password" defaultValue="••••••••••" readOnly />
+            </div>
+          </div>
+
+          <label className="upl-save-profile">
+            <span className="upl-checkbox-box" data-on="false" />
+            <span>SAVE PROFILE</span>
+          </label>
+
+          <div className="upl-actions">
+            <button className="upl-btn upl-btn-outline">TEST CONNECTION</button>
+            <button className="upl-btn upl-btn-mount">MOUNT</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── SCREEN 2: MAPPING (Directories) — per real screenshot ── */
+function UploaderMappingScreen() {
+  return (
+    <div className="upl-screen upl-screen-mapping">
+      <div className="upl-mapping-head">
+        <h2 className="upl-mapping-title">THE MAPPING</h2>
+        <p className="upl-mapping-sub">// Link local directory to remote host</p>
+      </div>
+
+      <div className="upl-recent">
+        <div className="upl-recent-label">
+          RECENT MAPPINGS <span className="upl-recent-hint">— click to open directly</span>
+        </div>
+        {[
+          { l: 'C:\\Users\\operator\\Projects\\portal-app',       r: '/var/www/portal' },
+          { l: 'C:\\Users\\operator\\Projects\\billing-api',      r: '/opt/billing-api' },
+          { l: 'C:\\Users\\operator\\Projects\\worker-queue',     r: '/opt/worker-queue' },
+          { l: 'C:\\Users\\operator\\Projects\\relay-server',     r: '/root/relay-server' },
+          { l: 'C:\\Users\\operator\\Projects\\partner-site',     r: '/opt/partner-site' },
+          { l: 'C:\\Users\\operator\\Projects\\staging-deploy',   r: '/opt/staging' },
+          { l: 'C:\\Users\\operator\\Projects\\stream-overlay',   r: '/opt/stream-overlay' },
+        ].map((m, i) => (
+          <div key={i} className="upl-recent-row">
+            <span className="upl-recent-local">{m.l}</span>
+            <span className="upl-recent-arrow">⟷</span>
+            <span className="upl-recent-remote">{m.r}</span>
+            <button className="upl-recent-action" title="Edit">✎</button>
+            <button className="upl-recent-action upl-recent-action-x" title="Remove">✕</button>
+          </div>
+        ))}
+      </div>
+
+      <div className="upl-pair">
+        {/* LOCAL */}
+        <div className="upl-panel">
+          <div className="upl-panel-head">
+            <span className="upl-panel-tag-text">LOCAL MACHINE</span>
+            <span className="upl-panel-badge">YOUR PC</span>
+          </div>
+          <div className="upl-panel-body upl-panel-empty">
+            <span className="upl-panel-empty-text">No folder selected</span>
+          </div>
+          <div className="upl-panel-foot-flat">
+            <button className="upl-browse-btn">BROWSE FOLDER</button>
+          </div>
+        </div>
+
+        <div className="upl-pair-dot" aria-hidden />
+
+        {/* REMOTE */}
+        <div className="upl-panel">
+          <div className="upl-panel-head">
+            <span className="upl-panel-tag-text">REMOTE HOST</span>
+            <span className="upl-panel-badge is-cyan">SERVER</span>
+          </div>
+          <div className="upl-panel-body">
+            <div className="upl-path-bar">
+              <span className="upl-path-up">↑ ..</span>
+              <span className="upl-path-current">/</span>
+            </div>
+            <div className="upl-tree">
+              {['bin.usr-is-merged', 'boot', 'cdrom', 'dev', 'etc', 'home', 'lib.usr-is-merged'].map((n) => (
+                <div key={n} className="upl-tree-row">
+                  <span className="upl-tree-arrow">▸</span>
+                  <span className="upl-tree-name">{n}</span>
+                </div>
+              ))}
+            </div>
+            <div className="upl-tree-selected">
+              <span className="upl-tree-selected-label">Selected:</span>
+              <span className="upl-tree-selected-path">/</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button className="upl-btn upl-btn-mount upl-btn-wide">
+        <span className="upl-link-glyph">⊙</span> LINK &amp; CONTINUE
+      </button>
+    </div>
+  );
+}
+
+/* ── SCREEN 3: CHANGES — left sidebar (files + deploy) + main diff per real UI ── */
+function UploaderChangesScreen() {
+  const files = [
+    { n: 'index.html', sub: 'desktop-agent/webapp', on: true, focus: true },
+    { n: 'sw.js',      sub: 'desktop-agent/webapp', on: true },
+    { n: 'app.js',     sub: 'desktop-agent/webapp', on: true },
+    { n: 'style.css',  sub: 'desktop-agent/webapp', on: true },
+  ];
+  const diffLines = [
+    { ln1: '803', ln2: '803', ty: 'ctx', text: '</div>' },
+    { ln1: '804', ln2: '804', ty: 'ctx', text: '' },
+    { ln1: '805', ln2: '805', ty: 'ctx', text: '<!-- ===== BOARD IFRAME OVERLAY ===== -->' },
+    { ln1: '806', ln2: '806', ty: 'ctx', text: '<div id="board-overlay" style="display:none;position:fixed;inset:0;z-index:9999;…' },
+    { ln1: '807', ln2: '',    ty: 'del', text: '  <iframe id="board-iframe" style="width:100%;height:100%;border:none" src="about:blank"></iframe>' },
+    { ln1: '',    ln2: '807', ty: 'add', text: '  <!-- Minimal titlebar для Electron когда открыта доска -->' },
+    { ln1: '',    ln2: '808', ty: 'add', text: '  <div class="board-titlebar" id="boardTitlebar">' },
+    { ln1: '',    ln2: '809', ty: 'add', text: '    <button class="board-titlebar-back" id="boardTitlebarBack" title="Назад">' },
+    { ln1: '',    ln2: '810', ty: 'add', text: '      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="curr…' },
+    { ln1: '',    ln2: '811', ty: 'add', text: '    </button>' },
+    { ln1: '',    ln2: '812', ty: 'add', text: '    <div class="board-titlebar-logo">' },
+    { ln1: '',    ln2: '813', ty: 'add', text: '      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="curr…' },
+    { ln1: '',    ln2: '814', ty: 'add', text: '      <span>Доска</span>' },
+    { ln1: '',    ln2: '815', ty: 'add', text: '    </div>' },
+    { ln1: '',    ln2: '816', ty: 'add', text: '    <div class="board-titlebar-drag"></div>' },
+    { ln1: '',    ln2: '817', ty: 'add', text: '    <div class="board-titlebar-controls">' },
+    { ln1: '',    ln2: '818', ty: 'add', text: '      <button class="winctl-btn" id="boardWinMin" title="Свернуть">' },
+    { ln1: '',    ln2: '819', ty: 'add', text: '        <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M…' },
+    { ln1: '',    ln2: '820', ty: 'add', text: '      </button>' },
+    { ln1: '808', ln2: '831', ty: 'ctx', text: '</div>' },
+    { ln1: '809', ln2: '832', ty: 'ctx', text: '<style>' },
+    { ln1: '810', ln2: '833', ty: 'ctx', text: '@keyframes boardFadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transfo…' },
+    { ln1: '811', ln2: '834', ty: 'ctx', text: '</style>' },
+  ];
+
+  return (
+    <div className="upl-screen-changes-wrap">
+      {/* LEFT SIDEBAR */}
+      <aside className="upl-chg-side">
+        <div className="upl-chg-side-head">
+          <span className="upl-chg-side-h">CHANGES</span>
+          <span className="upl-chg-side-meta">4 files <span className="upl-chg-refresh">↻</span></span>
+        </div>
+
+        <div className="upl-chg-ignored">
+          <div className="upl-chg-ignored-head">
+            <span className="upl-chg-ignored-label">IGNORED: 4 patterns</span>
+            <button className="upl-chg-ignored-clear">clear</button>
+          </div>
+        </div>
+
+        <div className="upl-chg-selected-row">
+          <span className="upl-checkbox-box" data-on="true" />
+          <span className="upl-chg-selected-label">4/4 selected</span>
+        </div>
+
+        <div className="upl-chg-file-list">
+          {files.map((f, i) => (
+            <div key={i} className={`upl-chg-file ${f.focus ? 'is-focus' : ''}`}>
+              <span className="upl-checkbox-box" data-on={f.on ? 'true' : 'false'} />
+              <span className="upl-chg-file-mark">M</span>
+              <div className="upl-chg-file-meta">
+                <span className="upl-chg-file-name">{f.n}</span>
+                <span className="upl-chg-file-sub">{f.sub}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="upl-chg-deploy">
+          <div className="upl-chg-deploy-label">POST-DEPLOY COMMAND</div>
+          <div className="upl-chg-deploy-row">
+            <input className="upl-chg-deploy-input" placeholder="e.g. cd /app && pm2 restart app" readOnly />
+            <button className="upl-chg-deploy-save">SAVE</button>
+          </div>
+          <button className="upl-btn upl-btn-mount upl-btn-deploy">↑ DEPLOY (4)</button>
+          <button className="upl-chg-sync">⇄ SYNC MANIFEST FROM SERVER</button>
+        </div>
+      </aside>
+
+      {/* MAIN DIFF */}
+      <div className="upl-diff-main">
+        <div className="upl-diff-topbar">
+          <span className="upl-diff-file">
+            <span className="upl-diff-icon">▤</span> desktop-agent/webapp/index.html
+          </span>
+          <span className="upl-diff-badge upl-diff-badge-mod">MODIFIED</span>
+        </div>
+
+        <div className="upl-diff-renamed">
+          <span className="upl-diff-icon">▤</span>
+          <span className="upl-diff-renamed-text">desktop-agent/webapp/&#123;index.html Server (remote) → index.html Local&#125;</span>
+          <span className="upl-diff-badge upl-diff-badge-rename">RENAMED</span>
+        </div>
+
+        <div className="upl-diff-body">
+          <div className="upl-diff-hunk">@@ -803,9 +803,32 @@</div>
+          {diffLines.map((line, i) => (
+            <div key={i} className={`upl-diff-line upl-diff-${line.ty}`}>
+              <span className="upl-diff-num">{line.ln1}</span>
+              <span className="upl-diff-num">{line.ln2}</span>
+              <span className="upl-diff-marker">{line.ty === 'add' ? '+' : line.ty === 'del' ? '−' : ' '}</span>
+              <code className="upl-diff-code">{line.text}</code>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Real YouDownload logo — 8-pointed star with two concentric rings ── */
 function YDLogo({ size = 22, themed = true }) {
   return (
@@ -527,7 +874,7 @@ function AppMock() {
                 ))}
               </div>
               <a
-                href="https://github.com/Bzden4ik/YouDownload/releases"
+                href="https://github.com/warfa/YouDownload/releases"
                 target="_blank" rel="noopener noreferrer"
                 className="yd-stub-cta"
                 onClick={(e) => { userInteracted.current = true; }}
@@ -1061,6 +1408,9 @@ function FlagshipPreview({ kind, item }) {
   if (kind === 'app-mock') {
     return <AppMock />;
   }
+  if (kind === 'uploader-mock') {
+    return <UploaderMock />;
+  }
 
   if (kind === 'fighting') {
     // Frame data — generic but plausible for a 2D fighter.
@@ -1345,17 +1695,17 @@ export default function Work() {
         <div className="grid-12 work-intro">
           <p className="t-lead work-preamble col-7">{work.preamble}</p>
           <div className="work-counts col-5">
-            <div className="work-count"><span className="t-meta">FLAGSHIP</span><span className="num tabular t-display">03</span></div>
+            <div className="work-count"><span className="t-meta">FLAGSHIP</span><span className="num tabular t-display">04</span></div>
             <div className="work-count"><span className="t-meta">PRODUCTION</span><span className="num tabular t-display">06</span></div>
             <div className="work-count"><span className="t-meta">UTILITY</span><span className="num tabular t-display">02</span></div>
-            <div className="work-count"><span className="t-meta">ARCHIVE</span><span className="num tabular t-display">04</span></div>
+            <div className="work-count"><span className="t-meta">ARCHIVE</span><span className="num tabular t-display">03</span></div>
           </div>
         </div>
 
         {/* ─── FLAGSHIP ─── */}
         <div className="tier-rule">
           <span className="t-meta">TIER I — FLAGSHIP</span>
-          <span className="t-meta">03 ENTRIES</span>
+          <span className="t-meta">04 ENTRIES</span>
         </div>
         <div className="work-flagship">
           {work.flagship.map((item, i) => <FlagshipCard key={item.code} item={item} idx={i} />)}
@@ -1466,8 +1816,11 @@ export default function Work() {
           gap: 5rem;
         }
         .fl-grid { row-gap: 2rem; column-gap: clamp(2rem, 4vw, 4rem); }
-        .fl-1 .fl-info { order: 2; }
-        .fl-1 .fl-preview { order: 1; }
+        /* Alternating L-R-L-R rhythm for editorial flow */
+        .fl-1 .fl-info,
+        .fl-3 .fl-info    { order: 2; }
+        .fl-1 .fl-preview,
+        .fl-3 .fl-preview { order: 1; }
         .fl-head {
           display: flex; align-items: baseline; gap: 1rem;
           margin-bottom: 0.8rem;
@@ -2866,6 +3219,1309 @@ export default function Work() {
         .yd-tc-check svg { width: 8px; height: 7px; }
         .yd-theme-apathy .yd-tc-on .yd-tc-check { background: #FF3B7C; }
 
+        /* ════════════════════════════════════════════════
+           UPLOADER MOCK (YouDesktopUploader-3)
+           Genre: psychedelic cyber-brutalist
+           Source: F:\ProjectHub\archive\YouDekstopUploader-3
+           ════════════════════════════════════════════════ */
+        .fp-uploader {
+          --ul-void:    #050505;
+          --ul-surface: #111111;
+          --ul-elev:    #1a1a1a;
+          --ul-panel:   #141414;
+          --ul-green:   #39FF14;
+          --ul-green-d: rgba(57,255,20,0.15);
+          --ul-magenta: #FF00FF;
+          --ul-orange:  #FF6B1A;
+          --ul-cyan:    #00FFFF;
+          --ul-red:     #FF3333;
+          --ul-t0:      #e0e0e0;
+          --ul-t1:      #888888;
+          --ul-t2:      #444444;
+          --ul-border:  rgba(57,255,20,0.15);
+          --ul-mono:    'JetBrains Mono', 'Fira Code', Consolas, monospace;
+
+          display: grid;
+          grid-template-rows: 38px auto 1fr 24px;
+          padding: 0;
+          background: var(--ul-void);
+          color: var(--ul-t0);
+          font-family: var(--ul-mono);
+          font-size: 12px;
+          position: relative;
+          overflow: hidden;
+          isolation: isolate;
+        }
+
+        /* scanline overlay — signature look */
+        .upl-scanlines {
+          position: absolute; inset: 0;
+          z-index: 10;
+          pointer-events: none;
+          background: repeating-linear-gradient(
+            0deg,
+            transparent 0,
+            transparent 2px,
+            rgba(0,0,0,0.18) 2px,
+            rgba(0,0,0,0.18) 4px
+          );
+        }
+
+        /* ─── title bar ─── */
+        .upl-titlebar {
+          display: flex; align-items: center;
+          background: var(--ul-surface);
+          border-bottom: 1px solid var(--ul-border);
+          padding: 0 8px 0 12px;
+          z-index: 2;
+        }
+        .upl-tb-left {
+          display: flex; align-items: center; gap: 10px;
+        }
+        .upl-hex {
+          color: var(--ul-green);
+          font-size: 16px;
+          line-height: 1;
+          filter: drop-shadow(0 0 4px var(--ul-green));
+        }
+        .upl-appname {
+          color: var(--ul-green);
+          font-size: 10.5px;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+        }
+        .upl-conn {
+          display: flex; align-items: center; gap: 6px;
+          color: var(--ul-t1);
+          font-size: 10px;
+          letter-spacing: 0.04em;
+          padding-left: 12px;
+          border-left: 1px solid var(--ul-border);
+          margin-left: 4px;
+        }
+        .upl-conn-dot {
+          width: 6px; height: 6px;
+          border-radius: 50%;
+          background: var(--ul-green);
+          box-shadow: 0 0 4px var(--ul-green);
+          animation: upl-blink 2s ease-in-out infinite;
+        }
+        @keyframes upl-blink {
+          0%, 100% { opacity: 1; }
+          50%      { opacity: 0.35; }
+        }
+        .upl-conn-proto {
+          color: var(--ul-cyan);
+          font-size: 9.5px;
+        }
+        .upl-tb-drag { flex: 1; }
+        .upl-tb-right {
+          display: flex; align-items: center; gap: 4px;
+        }
+        .upl-btn-disconnect {
+          background: transparent;
+          border: 1px solid rgba(255,51,51,0.3);
+          color: var(--ul-red);
+          font-family: var(--ul-mono);
+          font-size: 9.5px;
+          font-weight: 600;
+          letter-spacing: 0.1em;
+          padding: 3px 9px;
+          border-radius: 2px;
+          margin-right: 6px;
+          transition: all 0.18s;
+        }
+        .upl-btn-disconnect:hover {
+          background: rgba(255,51,51,0.1);
+          border-color: var(--ul-red);
+        }
+        .upl-wc {
+          width: 26px; height: 26px;
+          background: transparent;
+          color: var(--ul-t2);
+          font-family: var(--ul-mono);
+          font-size: 12px;
+          display: inline-flex;
+          align-items: center; justify-content: center;
+          border-radius: 2px;
+          transition: all 0.18s;
+        }
+        .upl-wc:hover { color: var(--ul-t0); background: var(--ul-elev); }
+        .upl-wc-close:hover { color: var(--ul-red); background: rgba(255,51,51,0.15); }
+
+        /* ─── nav tabs ─── */
+        .upl-navbar {
+          display: flex;
+          background: var(--ul-surface);
+          border-bottom: 1px solid var(--ul-border);
+          z-index: 2;
+        }
+        .upl-nav-tab {
+          background: transparent;
+          color: var(--ul-t1);
+          font-family: var(--ul-mono);
+          font-size: 10.5px;
+          letter-spacing: 0.12em;
+          padding: 8px 18px;
+          border-bottom: 2px solid transparent;
+          transition: color 0.18s, border-color 0.18s;
+          display: inline-flex; align-items: center; gap: 7px;
+        }
+        .upl-nav-tab:hover { color: var(--ul-t0); }
+        .upl-nav-tab-on {
+          color: var(--ul-green);
+          border-bottom-color: var(--ul-green);
+          font-weight: 700;
+        }
+        .upl-change-badge {
+          background: var(--ul-orange);
+          color: #000;
+          font-size: 9px;
+          font-weight: 700;
+          padding: 1px 5px;
+          border-radius: 2px;
+        }
+
+        /* ─── main content with crossfade slots ─── */
+        .upl-content {
+          position: relative;
+          overflow: hidden;
+          z-index: 1;
+          min-height: 0;
+        }
+        .upl-screen-slot {
+          position: absolute;
+          inset: 0;
+          overflow: auto;
+          opacity: 0;
+          transform: translateY(10px) scale(0.997);
+          pointer-events: none;
+          transition:
+            opacity 700ms cubic-bezier(0.4, 0, 0.2, 1),
+            transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: opacity, transform;
+        }
+        .upl-screen-slot.is-on {
+          opacity: 1;
+          transform: none;
+          pointer-events: auto;
+          transition:
+            opacity 700ms cubic-bezier(0.16, 1, 0.3, 1) 60ms,
+            transform 900ms cubic-bezier(0.16, 1, 0.3, 1) 60ms;
+        }
+        @keyframes upl-fade-in {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* nav tabs — smooth slide-in when connected */
+        .upl-navbar {
+          max-height: 0;
+          opacity: 0;
+          overflow: hidden;
+          padding: 0;
+          transition:
+            max-height 520ms cubic-bezier(0.16, 1, 0.3, 1),
+            opacity 360ms ease,
+            padding 520ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .upl-navbar.is-on {
+          max-height: 40px;
+          opacity: 1;
+        }
+        .upl-nav-tab {
+          transition:
+            color 360ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 420ms cubic-bezier(0.16, 1, 0.3, 1),
+            font-weight 320ms ease;
+        }
+
+        /* connection status in titlebar — fade in/out */
+        .upl-conn {
+          opacity: 0;
+          max-width: 0;
+          overflow: hidden;
+          white-space: nowrap;
+          padding-left: 0 !important;
+          margin-left: 0 !important;
+          border-left-width: 0 !important;
+          transition:
+            opacity 480ms cubic-bezier(0.16, 1, 0.3, 1) 120ms,
+            max-width 600ms cubic-bezier(0.16, 1, 0.3, 1),
+            padding 600ms cubic-bezier(0.16, 1, 0.3, 1),
+            margin 600ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-width 600ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .upl-conn.is-on {
+          opacity: 1;
+          max-width: 320px;
+          padding-left: 12px !important;
+          margin-left: 4px !important;
+          border-left-width: 1px !important;
+        }
+
+        /* DISCONNECT button + window controls — softer transitions */
+        .upl-btn-disconnect {
+          transition:
+            background 320ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 320ms cubic-bezier(0.16, 1, 0.3, 1),
+            color 320ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* CHANGES badge in nav — gentle scale-in */
+        .upl-change-badge {
+          display: inline-block;
+          transform-origin: center;
+          animation: upl-badge-pop 480ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        @keyframes upl-badge-pop {
+          0%   { transform: scale(0.4); opacity: 0; }
+          70%  { transform: scale(1.08); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* tab indicator — smooth underline */
+        .upl-nav-tab {
+          position: relative;
+        }
+        .upl-nav-tab::after {
+          content: '';
+          position: absolute;
+          left: 18px; right: 18px;
+          bottom: 0;
+          height: 2px;
+          background: var(--ul-green);
+          transform: scaleX(0);
+          transform-origin: center;
+          transition: transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .upl-nav-tab.upl-nav-tab-on::after {
+          transform: scaleX(1);
+        }
+        /* hide the original border-bottom on active since we use ::after now */
+        .upl-nav-tab-on { border-bottom-color: transparent; }
+
+        /* ─── SCREEN 1: connect ─── */
+        .upl-screen { padding: 18px 22px; }
+        .upl-conn-header {
+          position: relative;
+          padding: 12px 0 16px;
+          border-bottom: 1px solid var(--ul-border);
+          margin-bottom: 14px;
+          overflow: hidden;
+        }
+        .upl-hex-grid {
+          position: absolute; inset: 0;
+          display: grid;
+          grid-template-columns: repeat(9, 1fr);
+          align-items: center;
+          padding: 0 0.5rem;
+          color: var(--ul-green);
+          font-size: 28px;
+          pointer-events: none;
+        }
+        .upl-hex-bg { text-align: center; }
+        .upl-title-h1 {
+          font-family: var(--ul-mono);
+          font-size: 22px;
+          font-weight: 700;
+          letter-spacing: 0.22em;
+          color: var(--ul-green);
+          position: relative;
+          z-index: 1;
+          text-shadow: 0 0 8px rgba(57,255,20,0.45);
+        }
+        .upl-title-sub {
+          color: var(--ul-t1);
+          font-size: 10.5px;
+          letter-spacing: 0.08em;
+          margin-top: 4px;
+          position: relative;
+          z-index: 1;
+        }
+
+        .upl-conn-body {
+          display: flex; flex-direction: column;
+          gap: 8px;
+        }
+        .upl-section-label {
+          color: var(--ul-t1);
+          font-size: 9.5px;
+          letter-spacing: 0.18em;
+          padding-bottom: 4px;
+        }
+        .upl-section-label-spaced { margin-top: 10px; }
+        .upl-profile-list {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 6px;
+        }
+        .upl-profile-card {
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 8px 10px;
+          background: var(--ul-panel);
+          border: 1px solid var(--ul-border);
+          border-radius: 2px;
+          transition: all 0.18s;
+        }
+        .upl-profile-card:hover {
+          border-color: rgba(57,255,20,0.45);
+          background: var(--ul-elev);
+        }
+        .upl-profile-card.is-active {
+          border-color: var(--ul-green);
+          background: rgba(57,255,20,0.06);
+          box-shadow: 0 0 0 1px var(--ul-green), 0 0 12px rgba(57,255,20,0.18);
+        }
+        .upl-profile-name {
+          color: var(--ul-green);
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+        }
+        .upl-profile-meta {
+          color: var(--ul-t2);
+          font-size: 9.5px;
+          letter-spacing: 0.03em;
+          margin-top: 1px;
+        }
+        .upl-delete-btn {
+          background: transparent;
+          color: var(--ul-t2);
+          font-size: 11px;
+          padding: 2px 4px;
+          transition: color 0.18s;
+        }
+        .upl-delete-btn:hover { color: var(--ul-red); }
+
+        .upl-form { display: flex; flex-direction: column; gap: 8px; }
+        .upl-form-row { display: flex; gap: 8px; }
+        .upl-field {
+          display: flex; flex-direction: column;
+          gap: 3px;
+        }
+        .upl-field-grow { flex: 1; min-width: 0; }
+        .upl-field-port { width: 80px; flex-shrink: 0; }
+        .upl-field-label {
+          color: var(--ul-t1);
+          font-size: 9px;
+          letter-spacing: 0.14em;
+        }
+        .upl-field-input {
+          background: var(--ul-panel);
+          border: 1px solid var(--ul-border);
+          color: var(--ul-green);
+          font-family: var(--ul-mono);
+          font-size: 11.5px;
+          padding: 6px 9px;
+          border-radius: 2px;
+          outline: none;
+        }
+        .upl-field-input:focus { border-color: var(--ul-green); }
+
+        .upl-protocol-toggle {
+          display: flex;
+          background: var(--ul-panel);
+          border: 1px solid var(--ul-border);
+          border-radius: 2px;
+          padding: 2px;
+          width: fit-content;
+        }
+        .upl-proto-opt {
+          background: transparent;
+          color: var(--ul-t1);
+          font-family: var(--ul-mono);
+          font-size: 10.5px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          padding: 5px 14px;
+          transition: all 0.18s;
+        }
+        .upl-proto-opt-on {
+          background: rgba(57,255,20,0.12);
+          color: var(--ul-green);
+          box-shadow: inset 0 0 0 1px rgba(57,255,20,0.35);
+        }
+
+        .upl-actions {
+          display: flex; gap: 8px;
+          margin-top: 6px;
+        }
+        .upl-btn {
+          background: transparent;
+          border: 1px solid var(--ul-border);
+          color: var(--ul-t1);
+          font-family: var(--ul-mono);
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          padding: 7px 14px;
+          border-radius: 2px;
+          cursor: pointer;
+          transition: all 0.18s;
+        }
+        .upl-btn:hover { color: var(--ul-t0); border-color: rgba(57,255,20,0.4); }
+        .upl-btn-secondary { color: var(--ul-cyan); border-color: rgba(0,255,255,0.25); }
+        .upl-btn-secondary:hover { background: rgba(0,255,255,0.08); color: var(--ul-cyan); border-color: var(--ul-cyan); }
+        .upl-btn-primary {
+          background: rgba(57,255,20,0.1);
+          color: var(--ul-green);
+          border-color: var(--ul-green);
+          flex: 1;
+          animation: upl-pulse-glow 2.4s ease-in-out infinite;
+        }
+        .upl-btn-primary:hover {
+          background: rgba(57,255,20,0.18);
+          box-shadow: 0 0 12px var(--ul-green-d);
+        }
+        @keyframes upl-pulse-glow {
+          0%, 100% { box-shadow: 0 0 4px var(--ul-green), 0 0 8px rgba(57,255,20,0.3); }
+          50%      { box-shadow: 0 0 12px var(--ul-green), 0 0 22px rgba(57,255,20,0.4); }
+        }
+        .upl-btn-tiny { padding: 4px 10px; font-size: 10px; }
+
+        /* ─── SCREEN 2: mapping ─── */
+        .upl-screen-mapping { display: flex; flex-direction: column; gap: 10px; padding-bottom: 14px; }
+        .upl-mapping-head {
+          padding-bottom: 10px;
+          border-bottom: 1px solid var(--ul-border);
+        }
+        .upl-screen-title {
+          font-size: 16px;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          color: var(--ul-green);
+          font-family: var(--ul-mono);
+        }
+        .upl-screen-sub {
+          color: var(--ul-t1);
+          font-size: 10.5px;
+          letter-spacing: 0.05em;
+          margin-top: 4px;
+        }
+
+        .upl-mapping-cols {
+          display: grid;
+          grid-template-columns: 1fr 50px 1fr;
+          gap: 4px;
+          align-items: stretch;
+          min-height: 0;
+        }
+        .upl-panel {
+          display: flex; flex-direction: column;
+          background: var(--ul-panel);
+          border: 1px solid var(--ul-border);
+          border-radius: 2px;
+          min-height: 0;
+        }
+        .upl-panel-head {
+          display: flex; align-items: center; gap: 8px;
+          padding: 6px 10px;
+          background: rgba(57,255,20,0.05);
+          border-bottom: 1px solid var(--ul-border);
+        }
+        .upl-panel-tag {
+          color: var(--ul-green);
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          padding: 1px 6px;
+          background: rgba(57,255,20,0.12);
+          border: 1px solid rgba(57,255,20,0.35);
+          border-radius: 1px;
+        }
+        .upl-panel-tag.is-remote {
+          color: var(--ul-cyan);
+          background: rgba(0,255,255,0.1);
+          border-color: rgba(0,255,255,0.35);
+        }
+        .upl-panel-path {
+          color: var(--ul-t1);
+          font-size: 10.5px;
+          letter-spacing: 0.02em;
+        }
+
+        .upl-tree {
+          flex: 1;
+          padding: 5px 0;
+          font-size: 10.5px;
+          overflow: auto;
+        }
+        .upl-tree-row {
+          display: grid;
+          grid-template-columns: 56px 1fr auto;
+          align-items: center;
+          padding: 2px 10px;
+          color: var(--ul-t0);
+          letter-spacing: 0.02em;
+          line-height: 1.55;
+          transition: background 0.12s;
+        }
+        .upl-tree-row:hover { background: rgba(57,255,20,0.06); }
+        .upl-tree-row.is-dim { color: var(--ul-t1); }
+        .upl-tree-i {
+          color: var(--ul-green);
+          font-size: 9px;
+          letter-spacing: 0;
+          white-space: pre;
+        }
+        .upl-tree-row.is-dim .upl-tree-i { color: var(--ul-t2); }
+        .upl-tree-n { color: inherit; }
+        .upl-tree-ext { color: var(--ul-t2); font-size: 9.5px; }
+
+        .upl-panel-foot {
+          display: flex; align-items: center; gap: 6px;
+          padding: 5px 10px;
+          background: var(--ul-elev);
+          border-top: 1px solid var(--ul-border);
+          color: var(--ul-t1);
+          font-size: 9px;
+          letter-spacing: 0.1em;
+        }
+        .upl-foot-spacer { flex: 1; }
+        .upl-foot-dot {
+          width: 5px; height: 5px;
+          border-radius: 50%;
+          background: var(--ul-green);
+          box-shadow: 0 0 4px var(--ul-green);
+          animation: upl-blink 1.8s infinite;
+        }
+        .upl-foot-dot-cyan { background: var(--ul-cyan); box-shadow: 0 0 4px var(--ul-cyan); }
+
+        .upl-mapping-arrow {
+          display: flex; flex-direction: column;
+          align-items: center; justify-content: center;
+          gap: 4px;
+          color: var(--ul-green);
+        }
+        .upl-arrow-line {
+          flex: 1;
+          width: 1px;
+          background: linear-gradient(180deg, transparent, var(--ul-green), transparent);
+          min-height: 20px;
+        }
+        .upl-arrow-glyph {
+          font-size: 22px;
+          font-weight: 700;
+          line-height: 1;
+          text-shadow: 0 0 8px var(--ul-green);
+        }
+        .upl-arrow-meta {
+          color: var(--ul-t1);
+          font-size: 8px;
+          letter-spacing: 0.2em;
+          margin-top: 4px;
+        }
+
+        .upl-mapping-actions {
+          display: flex; gap: 8px;
+          padding-top: 6px;
+        }
+
+        /* ─── SCREEN 3: changes (diff) ─── */
+        .upl-screen-changes {
+          display: flex; flex-direction: column;
+          gap: 10px;
+          padding-bottom: 14px;
+        }
+        .upl-changes-head {
+          display: flex; justify-content: space-between; align-items: center;
+          padding-bottom: 8px;
+          border-bottom: 1px solid var(--ul-border);
+        }
+        .upl-changes-count {
+          color: var(--ul-orange);
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          margin-left: 8px;
+        }
+        .upl-changes-actions { display: flex; gap: 6px; }
+
+        .upl-changes-cols {
+          display: grid;
+          grid-template-columns: 240px 1fr;
+          gap: 4px;
+          align-items: stretch;
+          min-height: 0;
+        }
+
+        .upl-changes-list {
+          background: var(--ul-panel);
+          border: 1px solid var(--ul-border);
+          border-radius: 2px;
+          padding: 4px 0;
+          overflow: auto;
+          font-size: 10.5px;
+        }
+        .upl-chg-row {
+          display: grid;
+          grid-template-columns: 16px 14px 1fr auto;
+          align-items: center;
+          gap: 5px;
+          padding: 4px 8px;
+          color: var(--ul-t1);
+          transition: background 0.12s;
+        }
+        .upl-chg-row:hover { background: rgba(57,255,20,0.06); }
+        .upl-chg-row.is-on { color: var(--ul-t0); }
+        .upl-chg-row.is-focus {
+          background: rgba(57,255,20,0.12);
+          border-left: 2px solid var(--ul-green);
+          padding-left: 6px;
+        }
+        .upl-chg-checkbox {
+          color: var(--ul-green);
+          font-size: 10px;
+        }
+        .upl-chg-checkbox[data-on="false"] { color: var(--ul-t2); }
+        .upl-chg-mark {
+          font-weight: 700;
+          font-size: 11px;
+          text-align: center;
+        }
+        .upl-chg-mark-add { color: var(--ul-green); }
+        .upl-chg-mark-del { color: var(--ul-red); }
+        .upl-chg-mark-mod { color: var(--ul-orange); }
+        .upl-chg-name {
+          font-size: 10.5px;
+          letter-spacing: 0;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .upl-chg-diff {
+          display: inline-flex; gap: 5px;
+          font-size: 9px;
+        }
+        .upl-chg-add { color: var(--ul-green); }
+        .upl-chg-del { color: var(--ul-red); }
+
+        .upl-diff {
+          display: flex; flex-direction: column;
+          background: var(--ul-panel);
+          border: 1px solid var(--ul-border);
+          border-radius: 2px;
+          min-height: 0;
+        }
+        .upl-diff-head {
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 6px 10px;
+          background: rgba(57,255,20,0.05);
+          border-bottom: 1px solid var(--ul-border);
+        }
+        .upl-diff-path {
+          color: var(--ul-green);
+          font-size: 10.5px;
+          letter-spacing: 0.02em;
+        }
+        .upl-diff-counts {
+          display: inline-flex; gap: 8px;
+          font-size: 10px;
+          font-weight: 700;
+        }
+        .upl-diff-body {
+          overflow: auto;
+          padding: 4px 0;
+          font-size: 10.5px;
+          line-height: 1.5;
+          background: #0a0a0a;
+        }
+        .upl-diff-line {
+          display: grid;
+          grid-template-columns: 16px 30px 1fr;
+          gap: 4px;
+          padding: 1px 10px;
+          align-items: baseline;
+        }
+        .upl-diff-add {
+          background: rgba(57,255,20,0.08);
+          color: var(--ul-green);
+        }
+        .upl-diff-del {
+          background: rgba(255,51,51,0.08);
+          color: var(--ul-red);
+          opacity: 0.85;
+        }
+        .upl-diff-ctx { color: var(--ul-t1); }
+        .upl-diff-ln {
+          color: inherit;
+          font-weight: 700;
+          font-size: 10px;
+          text-align: center;
+          opacity: 0.6;
+        }
+        .upl-diff-num {
+          color: var(--ul-t2);
+          font-size: 9.5px;
+          text-align: right;
+        }
+        .upl-diff-code {
+          color: inherit;
+          font-family: var(--ul-mono);
+          font-size: 10.5px;
+          white-space: pre;
+          letter-spacing: 0;
+        }
+
+        /* ─── bottom bar ─── */
+        .upl-bottombar {
+          display: flex;
+          justify-content: space-between; align-items: center;
+          padding: 0 12px;
+          background: var(--ul-surface);
+          border-top: 1px solid var(--ul-border);
+          z-index: 2;
+        }
+        .upl-console-toggle {
+          background: transparent;
+          color: var(--ul-t2);
+          font-family: var(--ul-mono);
+          font-size: 9.5px;
+          letter-spacing: 0.1em;
+          padding: 0;
+          transition: color 0.18s;
+        }
+        .upl-console-toggle:hover { color: var(--ul-green); }
+        .upl-screen-meta {
+          color: var(--ul-cyan);
+          font-size: 9.5px;
+          letter-spacing: 0.14em;
+        }
+        .upl-version {
+          color: var(--ul-t2);
+          font-size: 9.5px;
+          letter-spacing: 0.06em;
+        }
+
+        .fp-uploader .fp-corner {
+          z-index: 11;
+          bottom: 1.8rem;
+          color: var(--ul-t2);
+        }
+
+        /* ═══════ v2 ADDITIONS — match real screenshots ═══════ */
+
+        /* — bottom bar without screen indicator — */
+        .upl-bottombar { grid-template-columns: auto 1fr; }
+
+        /* — Connect: centered card layout — */
+        .upl-conn-center {
+          max-width: 540px;
+          margin: 0 auto;
+          padding: 28px 18px 24px;
+        }
+        .upl-hex-strip {
+          display: flex; justify-content: center; gap: 9px;
+          margin-bottom: 18px;
+        }
+        .upl-hex-dot {
+          color: var(--ul-green);
+          font-size: 14px;
+          line-height: 1;
+        }
+        .upl-conn-card {
+          padding: 18px;
+          background: rgba(20,20,20,0.55);
+          border: 1px solid var(--ul-border);
+          border-radius: 2px;
+          margin-top: 18px;
+        }
+        .upl-profile-stack {
+          display: flex; flex-direction: column;
+          gap: 6px;
+          margin-bottom: 4px;
+        }
+        .upl-profile-stack .upl-profile-card {
+          width: 100%;
+          padding: 10px 12px;
+        }
+        .upl-protocol-toggle {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          width: 100%;
+          gap: 0;
+          padding: 0;
+          background: var(--ul-panel);
+          border: 1px solid var(--ul-border);
+        }
+        .upl-protocol-toggle .upl-proto-opt {
+          padding: 10px 0;
+          font-size: 12px;
+          letter-spacing: 0.18em;
+          text-align: center;
+          border-radius: 0;
+        }
+        .upl-protocol-toggle .upl-proto-opt-on {
+          background: var(--ul-green-d);
+          color: var(--ul-green);
+          box-shadow: inset 0 0 0 1px rgba(57,255,20,0.5);
+          text-shadow: 0 0 6px rgba(57,255,20,0.55);
+        }
+
+        .upl-form-row-spaced { margin-top: 8px; }
+        .upl-field-ghost { color: var(--ul-t1) !important; }
+
+        .upl-save-profile {
+          display: inline-flex; align-items: center; gap: 8px;
+          margin-top: 14px;
+          color: var(--ul-t1);
+          font-size: 11px;
+          letter-spacing: 0.1em;
+          cursor: pointer;
+        }
+        .upl-checkbox-box {
+          width: 14px; height: 14px;
+          display: inline-flex;
+          background: var(--ul-panel);
+          border: 1px solid var(--ul-border);
+          border-radius: 1px;
+          flex-shrink: 0;
+        }
+        .upl-checkbox-box[data-on="true"] {
+          background: var(--ul-green);
+          border-color: var(--ul-green);
+          box-shadow: 0 0 6px rgba(57,255,20,0.5);
+        }
+        .upl-conn-card .upl-actions {
+          margin-top: 16px;
+        }
+        .upl-btn-outline {
+          background: transparent;
+          border: 1px solid var(--ul-border);
+          color: var(--ul-t1);
+          flex: 0 0 auto;
+          padding: 10px 18px;
+        }
+        .upl-btn-outline:hover {
+          color: var(--ul-t0);
+          border-color: rgba(57,255,20,0.4);
+        }
+        .upl-btn-mount {
+          flex: 1;
+          background: var(--ul-green);
+          color: #000;
+          border: 0;
+          padding: 11px 18px;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.22em;
+          box-shadow: 0 0 14px rgba(57,255,20,0.5), 0 0 26px rgba(57,255,20,0.25);
+          transition: filter 0.18s, transform 0.12s;
+          animation: none;
+        }
+        .upl-btn-mount:hover {
+          filter: brightness(1.1);
+          box-shadow: 0 0 18px rgba(57,255,20,0.7), 0 0 36px rgba(57,255,20,0.35);
+        }
+        .upl-btn-wide {
+          width: 100%;
+          padding: 14px 18px;
+          margin-top: 10px;
+        }
+        .upl-link-glyph {
+          color: #000;
+          margin-right: 6px;
+        }
+
+        /* — Mapping: recent + pair panels — */
+        .upl-mapping-head { text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--ul-border); margin-bottom: 16px; }
+        .upl-mapping-title {
+          font-size: 18px;
+          font-weight: 700;
+          letter-spacing: 0.32em;
+          color: var(--ul-cyan);
+          text-shadow: 0 0 8px rgba(0,255,255,0.5);
+        }
+        .upl-mapping-sub { margin-top: 4px; }
+
+        .upl-recent {
+          margin-bottom: 14px;
+        }
+        .upl-recent-label {
+          font-size: 10px;
+          letter-spacing: 0.18em;
+          color: var(--ul-t1);
+          padding-bottom: 8px;
+        }
+        .upl-recent-hint { color: var(--ul-t2); font-size: 9.5px; }
+        .upl-recent-row {
+          display: grid;
+          grid-template-columns: 1fr 30px 1fr 24px 24px;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 10px;
+          background: var(--ul-panel);
+          border: 1px solid var(--ul-border);
+          margin-bottom: 4px;
+          font-size: 10.5px;
+          color: var(--ul-t0);
+          letter-spacing: 0.01em;
+        }
+        .upl-recent-row:hover {
+          border-color: rgba(57,255,20,0.4);
+          background: var(--ul-elev);
+        }
+        .upl-recent-local { color: var(--ul-green); }
+        .upl-recent-arrow { color: var(--ul-cyan); text-align: center; }
+        .upl-recent-remote { color: var(--ul-t1); text-align: right; }
+        .upl-recent-action {
+          width: 22px; height: 22px;
+          background: transparent;
+          color: var(--ul-t2);
+          font-size: 11px;
+          border: 1px solid var(--ul-border);
+          border-radius: 1px;
+          display: inline-flex; align-items: center; justify-content: center;
+        }
+        .upl-recent-action:hover { color: var(--ul-green); border-color: rgba(57,255,20,0.35); }
+        .upl-recent-action-x:hover { color: var(--ul-red); border-color: rgba(255,51,51,0.35); }
+
+        .upl-pair {
+          display: grid;
+          grid-template-columns: 1fr 18px 1fr;
+          gap: 0;
+          align-items: stretch;
+          margin-bottom: 12px;
+          min-height: 200px;
+        }
+        .upl-pair-dot {
+          align-self: center; justify-self: center;
+          width: 8px; height: 8px;
+          border-radius: 50%;
+          background: var(--ul-green);
+          box-shadow: 0 0 8px var(--ul-green);
+          animation: upl-blink 1.6s infinite;
+        }
+        .upl-panel-tag-text {
+          color: var(--ul-t1);
+          font-size: 11px;
+          letter-spacing: 0.16em;
+          font-weight: 600;
+        }
+        .upl-panel-badge {
+          background: var(--ul-green);
+          color: #000;
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          padding: 2px 7px;
+          border-radius: 1px;
+        }
+        .upl-panel-badge.is-cyan { background: var(--ul-cyan); }
+        .upl-panel-body {
+          flex: 1;
+          padding: 10px 12px;
+          font-size: 10.5px;
+          overflow: auto;
+        }
+        .upl-panel-empty {
+          display: flex; align-items: center; justify-content: center;
+          color: var(--ul-t2);
+          font-size: 11px;
+          letter-spacing: 0.04em;
+        }
+        .upl-panel-foot-flat {
+          padding: 8px 10px;
+          border-top: 1px solid var(--ul-border);
+        }
+        .upl-browse-btn {
+          width: 100%;
+          background: transparent;
+          color: var(--ul-t0);
+          border: 1px solid var(--ul-border);
+          font-family: var(--ul-mono);
+          font-size: 11px;
+          letter-spacing: 0.14em;
+          padding: 8px 12px;
+          border-radius: 1px;
+          transition: all 0.18s;
+        }
+        .upl-browse-btn:hover {
+          background: var(--ul-elev);
+          border-color: rgba(57,255,20,0.4);
+        }
+        .upl-path-bar {
+          display: inline-flex; align-items: center; gap: 6px;
+          margin-bottom: 8px;
+          padding: 4px 8px;
+          background: var(--ul-elev);
+          border: 1px solid var(--ul-border);
+          font-size: 10px;
+        }
+        .upl-path-up {
+          background: transparent;
+          color: var(--ul-t1);
+          border: 1px solid var(--ul-border);
+          padding: 2px 6px;
+          border-radius: 1px;
+        }
+        .upl-path-current { color: var(--ul-green); font-size: 11px; }
+        .upl-tree-arrow { color: var(--ul-green); }
+        .upl-tree-name { color: var(--ul-t0); }
+        .upl-tree-selected {
+          margin-top: 6px;
+          padding: 4px 0 0;
+          border-top: 1px dashed var(--ul-border);
+          font-size: 10px;
+          color: var(--ul-t2);
+        }
+        .upl-tree-selected-label { letter-spacing: 0.06em; }
+        .upl-tree-selected-path { color: var(--ul-cyan); margin-left: 4px; }
+
+        /* — Changes: sidebar + diff — */
+        .upl-screen-changes-wrap {
+          display: grid;
+          grid-template-columns: 200px 1fr;
+          align-items: stretch;
+          height: 100%;
+          background: var(--ul-void);
+        }
+        .upl-chg-side {
+          background: var(--ul-surface);
+          border-right: 1px solid var(--ul-border);
+          display: flex; flex-direction: column;
+          font-size: 10.5px;
+          min-height: 0;
+        }
+        .upl-chg-side-head {
+          display: flex; justify-content: space-between; align-items: baseline;
+          padding: 10px 12px;
+          border-bottom: 1px solid var(--ul-border);
+        }
+        .upl-chg-side-h {
+          font-size: 11px; font-weight: 700;
+          letter-spacing: 0.18em;
+          color: var(--ul-t0);
+        }
+        .upl-chg-side-meta { color: var(--ul-t2); font-size: 10px; letter-spacing: 0.04em; }
+        .upl-chg-refresh { color: var(--ul-cyan); margin-left: 4px; }
+
+        .upl-chg-ignored {
+          padding: 8px 12px;
+          border-bottom: 1px solid var(--ul-border);
+        }
+        .upl-chg-ignored-head {
+          display: flex; justify-content: space-between;
+          font-size: 9.5px;
+          letter-spacing: 0.12em;
+        }
+        .upl-chg-ignored-label { color: var(--ul-orange); }
+        .upl-chg-ignored-clear {
+          background: transparent;
+          color: var(--ul-t1);
+          font-family: var(--ul-mono);
+          font-size: 9.5px;
+          letter-spacing: 0.06em;
+          text-transform: lowercase;
+          text-decoration: underline;
+          padding: 0;
+        }
+
+        .upl-chg-selected-row {
+          display: flex; align-items: center; gap: 8px;
+          padding: 8px 12px;
+          border-bottom: 1px solid var(--ul-border);
+          color: var(--ul-green);
+          font-size: 10.5px;
+          letter-spacing: 0.04em;
+        }
+
+        .upl-chg-file-list {
+          flex: 1;
+          overflow: auto;
+          padding: 4px 0;
+        }
+        .upl-chg-file {
+          display: grid;
+          grid-template-columns: 14px 14px 1fr;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 12px;
+          color: var(--ul-t1);
+          transition: background 0.12s, color 0.12s;
+        }
+        .upl-chg-file:hover { background: rgba(57,255,20,0.05); color: var(--ul-t0); }
+        .upl-chg-file.is-focus {
+          background: rgba(57,255,20,0.1);
+          border-left: 2px solid var(--ul-green);
+          padding-left: 10px;
+          color: var(--ul-t0);
+        }
+        .upl-chg-file-mark { color: var(--ul-orange); font-weight: 700; text-align: center; }
+        .upl-chg-file-meta { display: flex; flex-direction: column; min-width: 0; }
+        .upl-chg-file-name {
+          color: inherit;
+          font-size: 11px;
+          letter-spacing: 0.02em;
+          white-space: nowrap;
+          overflow: hidden; text-overflow: ellipsis;
+        }
+        .upl-chg-file-sub {
+          color: var(--ul-t2);
+          font-size: 9.5px;
+        }
+
+        .upl-chg-deploy {
+          padding: 10px 12px 14px;
+          border-top: 1px solid var(--ul-border);
+          display: flex; flex-direction: column; gap: 6px;
+        }
+        .upl-chg-deploy-label {
+          color: var(--ul-cyan);
+          font-size: 9.5px;
+          letter-spacing: 0.14em;
+        }
+        .upl-chg-deploy-row { display: flex; gap: 4px; }
+        .upl-chg-deploy-input {
+          flex: 1;
+          background: var(--ul-panel);
+          border: 1px solid var(--ul-border);
+          color: var(--ul-t0);
+          font-family: var(--ul-mono);
+          font-size: 10px;
+          padding: 5px 8px;
+          border-radius: 1px;
+          min-width: 0;
+        }
+        .upl-chg-deploy-save {
+          background: var(--ul-elev);
+          color: var(--ul-t1);
+          border: 1px solid var(--ul-border);
+          font-family: var(--ul-mono);
+          font-size: 9.5px;
+          letter-spacing: 0.08em;
+          padding: 5px 10px;
+          border-radius: 1px;
+        }
+        .upl-btn-deploy {
+          width: 100%;
+          padding: 11px 12px;
+          font-size: 12px;
+          letter-spacing: 0.18em;
+          margin-top: 6px;
+        }
+        .upl-chg-sync {
+          background: transparent;
+          color: var(--ul-t1);
+          border: 1px solid var(--ul-border);
+          font-family: var(--ul-mono);
+          font-size: 9.5px;
+          letter-spacing: 0.12em;
+          padding: 7px 8px;
+          border-radius: 1px;
+        }
+        .upl-chg-sync:hover {
+          color: var(--ul-cyan);
+          border-color: rgba(0,255,255,0.35);
+        }
+
+        /* — Diff main — */
+        .upl-diff-main {
+          display: flex; flex-direction: column;
+          background: var(--ul-void);
+          min-height: 0;
+          overflow: hidden;
+        }
+        .upl-diff-topbar {
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 8px 14px;
+          border-bottom: 1px solid var(--ul-border);
+        }
+        .upl-diff-file {
+          color: var(--ul-t0);
+          font-size: 11px;
+          letter-spacing: 0.02em;
+          display: inline-flex; align-items: center; gap: 6px;
+        }
+        .upl-diff-icon { color: var(--ul-t2); font-size: 12px; }
+        .upl-diff-badge {
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          padding: 2px 7px;
+          border-radius: 1px;
+        }
+        .upl-diff-badge-mod {
+          background: rgba(255,107,26,0.15);
+          color: var(--ul-orange);
+          border: 1px solid rgba(255,107,26,0.4);
+        }
+        .upl-diff-badge-rename {
+          background: rgba(0,255,255,0.12);
+          color: var(--ul-cyan);
+          border: 1px solid rgba(0,255,255,0.35);
+        }
+
+        .upl-diff-renamed {
+          display: flex; align-items: center; gap: 8px;
+          padding: 6px 14px;
+          border-bottom: 1px solid var(--ul-border);
+          background: var(--ul-surface);
+          font-size: 10px;
+          color: var(--ul-t1);
+        }
+        .upl-diff-renamed-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .upl-diff-body {
+          flex: 1;
+          overflow: auto;
+          padding: 0;
+          font-size: 10px;
+          line-height: 1.55;
+          background: #060606;
+        }
+        .upl-diff-hunk {
+          padding: 4px 14px;
+          color: var(--ul-cyan);
+          font-size: 10px;
+          letter-spacing: 0.02em;
+          background: rgba(0,255,255,0.04);
+        }
+        .upl-diff-line {
+          display: grid;
+          grid-template-columns: 36px 36px 16px 1fr;
+          gap: 0;
+          align-items: baseline;
+          padding-left: 4px;
+        }
+        .upl-diff-add {
+          background: rgba(57,255,20,0.1);
+          color: var(--ul-green);
+        }
+        .upl-diff-del {
+          background: rgba(255,51,51,0.1);
+          color: var(--ul-red);
+        }
+        .upl-diff-ctx { color: var(--ul-t1); background: transparent; }
+        .upl-diff-num {
+          text-align: right;
+          padding-right: 8px;
+          color: var(--ul-t2);
+          font-size: 9.5px;
+          letter-spacing: 0;
+        }
+        .upl-diff-marker {
+          text-align: center;
+          font-weight: 700;
+          opacity: 0.7;
+        }
+        .upl-diff-code {
+          padding-left: 6px;
+          white-space: pre;
+          font-family: var(--ul-mono);
+          font-size: 10.5px;
+          letter-spacing: 0;
+          color: inherit;
+          overflow: hidden;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .upl-scanlines { opacity: 0.5; }
+          .upl-btn-primary, .upl-btn-mount { animation: none; }
+          .upl-conn-dot, .upl-foot-dot, .upl-pair-dot { animation: none; }
+        }
+
         /* legacy class shim so the rest of the FlagshipPreview "apparmor" still works */
         .fp-app {
           display: flex;
@@ -3935,8 +5591,10 @@ export default function Work() {
 
         /* ═══════ responsive ═══════ */
         @media (max-width: 1100px) {
-          .fl-1 .fl-info { order: 1; }
-          .fl-1 .fl-preview { order: 2; }
+          .fl-1 .fl-info,
+          .fl-3 .fl-info    { order: 1; }
+          .fl-1 .fl-preview,
+          .fl-3 .fl-preview { order: 2; }
         }
         @media (max-width: 900px) {
           .work-counts { grid-template-columns: repeat(2, 1fr); }

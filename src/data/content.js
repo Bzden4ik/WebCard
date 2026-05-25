@@ -188,7 +188,7 @@ export const work = {
       year: "2025",
       role: "Solo · Desktop",
       live: null,
-      repo: "https://github.com/Bzden4ik/YouDownload",
+      repo: "https://github.com/warfa/YouDownload",
       kind: "Desktop · v1.1.5",
       brief: [
         "Electron-приложение поверх yt-dlp. Поддерживает 1000+ сайтов, авто-слияние видео+аудио через ffmpeg, очередь загрузок, историю до 200 записей, RU/EN. Бинарь распространяется через GitHub Releases.",
@@ -204,6 +204,27 @@ export const work = {
     },
     {
       code: "PRJ-003",
+      title: "YouDesktopUploader",
+      tagline: "SFTP/FTP клиент с visual-diff просмотром перед синком",
+      year: "2024",
+      role: "Solo · Desktop",
+      live: null,
+      repo: null,
+      kind: "Desktop · v1.0.0 BICYCLE BUILD",
+      brief: [
+        "Electron-приложение для синхронизации локальной папки с удалённым SFTP/FTP-сервером. Перед загрузкой показывает полный diff каждого изменённого файла: добавленные/удалённые строки, side-by-side сравнение через diff2html. Никаких слепых перезаписей.",
+        "Файловый наблюдатель (chokidar) ловит изменения в реальном времени, parallelism-pool (p-limit) ограничивает одновременные SFTP-операции до 3, electron-store хранит подключения и mappings, zustand для UI-state. Connection profiles шифруются.",
+      ],
+      specs: [
+        { row: "RUNTIME",  values: ["Electron 31", "Vite 5", "React 18"] },
+        { row: "TRANSPORT", values: ["ssh2-sftp-client", "basic-ftp", "chokidar fs watcher"] },
+        { row: "DIFF",     values: ["diff", "diff2html", "side-by-side viewer"] },
+        { row: "STATE",    values: ["zustand", "electron-store", "p-limit pool"] },
+      ],
+      preview: "uploader-mock",
+    },
+    {
+      code: "PRJ-004",
       title: "GotIt",
       tagline: "Парсер wishlist-стримеров с fetta.app, Telegram-бот, real-time уведомления",
       year: "2024",
@@ -304,12 +325,11 @@ export const work = {
     },
   ],
 
-  /* ─── ARCHIVE (4) — одна строка ─── */
+  /* ─── ARCHIVE (3) — одна строка ─── */
   archive: [
     { code: "ARC-01", title: "TwitchOverlayApp",      year: "2024", note: "Electron Twitch chat overlay builder",         stack: "Electron" },
     { code: "ARC-02", title: "YouOBSRemote",          year: "2024", note: "OBS Studio remote control web UI",              stack: "Node · Vite" },
-    { code: "ARC-03", title: "YouDekstopUploader-3",  year: "2024", note: "SFTP/FTP sync tool с diff-просмотром",          stack: "Electron · React · SSH2" },
-    { code: "ARC-04", title: "TwitchChat",            year: "2023", note: "Pure HTML/CSS pixel-чат для OBS overlay",       stack: "HTML · CSS" },
+    { code: "ARC-03", title: "TwitchChat",            year: "2023", note: "Pure HTML/CSS pixel-чат для OBS overlay",       stack: "HTML · CSS" },
   ],
 };
 
@@ -332,7 +352,7 @@ export const signal = {
 
   channels: [
     { code: "CH-01", label: "GITHUB",   handle: "github.com/Bzden4ik",   href: "https://github.com/Bzden4ik" },
-    { code: "CH-02", label: "TELEGRAM", handle: "@Bzden4ikkk",           href: "https://t.me/QWEE4IK" },
+    { code: "CH-02", label: "TELEGRAM", handle: "@Bzden4ikkk",           href: "https://t.me/Bzden4ikkk" },
     { code: "CH-03", label: "EMAIL",    handle: "bzdenbzden4ik@gmail.com", href: "mailto:bzdenbzden4ik@gmail.com" },
   ],
 
